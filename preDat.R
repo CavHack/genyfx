@@ -103,3 +103,22 @@ evalq(ggpairs(dataSetCap, columns = 8:13,
               mapping = aes(color = Class),
               title = "PredCap2"), 
       env)
+#-----
+evalq(x.out %>% tbl_df() %>% 
+        cbind(Data = dataSetClean$Data, .,
+              Class = dataSetClean$Class) -> 
+        dataSetOut, 
+      env)
+
+
+##------DMwR2-------------------
+require(DMwR2)
+evalq(lof.x <- lofactor(x,10), env)
+evalq(lof.x.cap <- lofactor(x.cap,10), env)
+par(mfrow = c(1, 3))
+boxplot(env$lof.x, main = "lof.x", 
+        boxwex = 0.5)
+boxplot(env$lof.x.cap, main = "lof.x.cap", 
+        boxwex = 0.5)
+hist(env$lof.x.cap, breaks = 20)
+par(mfrow = c(1, 1))
