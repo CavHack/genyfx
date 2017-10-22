@@ -42,3 +42,17 @@ remove_outliers <- function(x, na.rm = TRUE, ...) {
   y
 }
 #----------
+evalq({
+  dataSetClean %>% select(-c(Data,Class)) %>% 
+    as.data.frame() -> x 
+  foreach(i = 1:ncol(x), .combine = "cbind") %do% {
+    remove_outliers(x[ ,i])
+  } -> x.out
+  colnames(x.out) <- colnames(x)
+  },  
+env)
+#---------Ris11-------------------
+par(mfrow = c(1, 1))
+chart.Boxplot(env$x, 
+              main = "x.out with outliers",
+              xlab = "")
