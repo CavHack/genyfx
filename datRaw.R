@@ -89,3 +89,12 @@ evalq(dataSet <- pr %>% tbl_df() %>%
                  dplyr::lead()) %>% 
         dplyr::select(-sig),
       env)
+##==============Time Series==========================
+#-----Graphics-----------
+require(ggplot2)
+#--------Ris1--------------------------
+evalq(pr %>% tail(., 200) %>%
+        ggplot(aes(x = Data, y = Close)) +
+        geom_candlestick(aes(open = Open, high = High, low = Low, close = Close)) +
+        labs(title = "EURJPY Candlestick Chart", y = "Close Price", x = "") + 
+        theme_tq(), env)
