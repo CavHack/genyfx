@@ -22,7 +22,53 @@ library(Rlof)
 evalq({pr <- pr.OHLCV(Data, Open, High, Low, Close, Volume)
 	}, 
 	env)
-##------------
+##--------------------
 head(env$pr)
 tail(env$pr)
-##-----------
+##---------------------
+evalq(pr %<>% mutate(.,
+	 #----Predictors--------
+evalq(pr %<>% mutate(.,
+		  Med = (High + Low)/2,
+                  Typ = (High + Low + Close)/3,
+                  Wg  = (High + Low + 2 * Close)/4,
+                  #CO=Close-Open,
+                  #HO  = High - Open,
+                  #LO  = Low - Open,
+                  dH  = c(NA, diff(High)),
+                  dL  = c(NA, diff(Low)) 
+
+
+
+
+env)
+##----Predictors--------
+evalq(pr %<>% mutate(.,
+                   fatl = DigFiltr(Close, 1),
+                   rftl = DigFiltr(Close, 2),
+                   satl = DigFiltr(Close, 3),
+                   rstl = DigFiltr(Close, 4)
+                   ),
+      env) 
+
+evalq(pr %<>% mutate(.,
+                     ftlm = fatl - rftl,
+                     rbci = fatl - satl,
+                     stlm = satl - rstl,
+                     pcci = Close - fatl,
+                     #fars = fatl - rstl,
+                     v.fatl = c(NA, diff(fatl)),
+                     v.rftl = c(NA, diff(rftl)),
+                     v.satl = c(NA, diff(satl)),
+                     v.rstl = c(NA, diff(rstl)*10)
+                     ),
+      env)
+evalq(pr %<>% mutate(.,
+                     v.ftlm = c(NA, diff(ftlm)),
+                     v.stlm = c(NA, diff(stlm)),
+                     v.rbci = c(NA, diff(rbci)),
+                     v.pcci = c(NA, diff(pcci))#,v.fars = c(NA, diff(fars))
+                    ),
+      env)
+
+##-----target--------------------------------------
