@@ -80,4 +80,27 @@ DigFiltr <- function(X, type = 1){
   return(f)
 }
 
-##-------------------------------------------------------
+##----------------Goal-------------
+ZZ <- function(x, par) {
+   require(TTR)
+   require(magrittr)
+   ch = par[1]
+   mode = par[2]
+   if (ch > 1) ch <- ch/(10 ^ (Dig - 1))
+   switch(mode, xx <- x$Close,
+   		xx <- x$Med, xx <- x$Typ,
+		xx <- x$Wd, xx <- x %>% select(High, Low))
+
+zz <- ZigZag(xx, change= ch, percent = F,
+      		 retrace = F, lastExtreme = T)
+
+
+
+   n <- 1:length(zz)
+   for (i in n) { if (is.na(zz[i])) zz[i] = zz[i - 1]}
+   return(zz)
+
+
+
+
+}
