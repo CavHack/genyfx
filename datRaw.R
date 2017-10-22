@@ -98,3 +98,62 @@ evalq(pr %>% tail(., 200) %>%
         geom_candlestick(aes(open = Open, high = High, low = Low, close = Close)) +
         labs(title = "EURJPY Candlestick Chart", y = "Close Price", x = "") + 
         theme_tq(), env)
+#---------Ris2------
+evalq(pr %>% tail(., 200) %>%
+        ggplot(aes(x = Data, y = Close)) +
+        geom_candlestick(aes(open = Open, high = High, low = Low, close = Close)) +
+        geom_line(aes(Data, fatl), color = "steelblue", size = 1) +
+        geom_line(aes(Data, rftl), color = "red", size = 1) +
+        geom_line(aes(Data, satl), color = "gold", size = 1) +
+        geom_line(aes(Data, rstl), color = "green", size = 1) +
+        geom_line(aes(Data, zigz), color = "black", size = 1) +
+        labs(title = "EURJPY Candlestick Chart", 
+             subtitle = "Combining Chart Geoms",
+             y = "Close Price", x = "") + 
+        theme_tq(), env)
+#--------Ris3-------
+require(dygraphs)
+evalq(dataSet %>% tail(., 200) %>% tk_tbl %>%
+        select(Data, ftlm, stlm, rbci, pcci) %>%
+        tk_xts() %>% 
+        dygraph(., main = "Oscilator base") %>% 
+        dyOptions(., 
+                  fillGraph = TRUE, 
+                  fillAlpha = 0.2,
+                  drawGapEdgePoints = TRUE,
+                  colors = c("green", "violet", "red", "blue"),
+                  digitsAfterDecimal = Dig) %>%
+        dyLegend(show = "always", 
+                 hideOnMouseOut = TRUE), 
+      env)
+
+#-------Ris4----------
+evalq(dataSet %>% tail(., 200) %>% tk_tbl %>%
+        select(Data, v.fatl, v.satl, v.rftl, v.rstl) %>%
+        tk_xts() %>% 
+        dygraph(., main = "Oscilator 2") %>% 
+        dyOptions(., 
+                  fillGraph = TRUE, 
+                  fillAlpha = 0.2,
+                  drawGapEdgePoints = TRUE,
+                  colors = c("green", "violet", "red", "darkblue"),
+                  digitsAfterDecimal = Dig) %>%
+        dyLegend(show = "always", 
+                 hideOnMouseOut = TRUE), 
+      env)
+
+#------Ris5--------------
+evalq(dataSet %>% tail(., 100) %>% tk_tbl %>%
+        select(Data, v.ftlm, v.stlm, v.rbci, v.pcci) %>%
+        tk_xts() %>% 
+        dygraph(., main = "Oscilator 3") %>% 
+        dyOptions(., 
+                  fillGraph = TRUE, 
+                  fillAlpha = 0.2,
+                  drawGapEdgePoints = TRUE,
+                  colors = c("green", "violet", "red", "darkblue"),
+                  digitsAfterDecimal = Dig) %>%
+        dyLegend(show = "always", 
+                 hideOnMouseOut = TRUE), 
+      env)
+#-----------
