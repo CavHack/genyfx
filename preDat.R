@@ -85,3 +85,21 @@ env)
 chart.Boxplot(env$x.cap, 
               main = "x.cap with capping outliers",
               xlab = "")
+#-------------------
+evalq(x.cap %>% tbl_df() %>% 
+        cbind(Data = dataSetClean$Data, .,
+              Class = dataSetClean$Class) -> 
+        dataSetCap, 
+      env)
+#---------Ris14-----------
+require(GGally)
+evalq(ggpairs(dataSetCap, columns = 2:7, 
+              mapping = aes(color = Class),
+              title = "PredCap1"), 
+      env)
+
+#-------Ris15------------------
+evalq(ggpairs(dataSetCap, columns = 8:13, 
+              mapping = aes(color = Class),
+              title = "PredCap2"), 
+      env)
