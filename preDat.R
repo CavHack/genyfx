@@ -51,8 +51,37 @@ evalq({
   colnames(x.out) <- colnames(x)
   },  
 env)
-#---------Ris11-------------------
+#----------------------------------
 par(mfrow = c(1, 1))
 chart.Boxplot(env$x, 
               main = "x.out with outliers",
+              xlab = "")
+
+chart.Boxplot(env$x.out, 
+              main = "x.out without outliers",
+              xlab = "")
+#---caping-----
+capping_outliers <- function(x, na.rm = TRUE, ...) {
+  qnt <- quantile(x, probs = c(.25, .75), 
+                  na.rm = na.rm, ...)
+  caps <- quantile(x, probs = c(.05, .95), 
+                   na.rm = na.rm, ...)
+  H <- 1.5 * IQR(x, na.rm = na.rm)
+  y <- x
+  y[x < (qnt[1] - H)] <- caps[1] 
+  y[x > (qnt[2] + H)] <- caps[2] 
+  y
+}
+#------------------------
+evalq({dataSetClean %>% select(-c(Data,Class)) %>%
+    as.data.frame() -> x 
+    foreach(i = 1:ncol(x), .combine = "cbind") %do% {
+      capping_outliers(x[ ,i])
+    } -> x.cap
+    colnames(x.cap) <- colnames(x)
+   },  
+env)
+#-----------Ris13--------
+chart.Boxplot(env$x.cap, 
+              main = "x.cap with capping outliers",
               xlab = "")
