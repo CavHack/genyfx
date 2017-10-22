@@ -78,3 +78,14 @@ evalq(pr %<>% cbind(., zigz = ZZ(., par = par)), env)
 evalq(pr %<>% cbind(., dz = diff(pr$zigz) %>% c(NA, .)), env) 
 evalq(pr %<>% cbind(., sig = sign(pr$dz)), env)
 ##------------------------------------------------
+str(env$pr)
+#-----------dataSet-----------------------
+evalq(dataSet <- pr %>% tbl_df() %>%
+        dplyr::select(Data, ftlm, stlm, rbci, pcci, #fars,
+                      v.fatl, v.satl, v.rftl, v.rstl,
+                      v.ftlm, v.stlm, v.rbci, v.pcci, sig) %>%
+        dplyr::filter(., sig != 0) %>% 
+        mutate(., Class = factor(sig, ordered = F) %>% 
+                 dplyr::lead()) %>% 
+        dplyr::select(-sig),
+      env)

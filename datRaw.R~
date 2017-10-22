@@ -72,3 +72,9 @@ evalq(pr %<>% mutate(.,
       env)
 
 ##-----target--------------------------------------
+#--------ZigZag-----
+par <- c(25, 5)
+evalq(pr %<>% cbind(., zigz = ZZ(., par = par)), env)
+evalq(pr %<>% cbind(., dz = diff(pr$zigz) %>% c(NA, .)), env) 
+evalq(pr %<>% cbind(., sig = sign(pr$dz)), env)
+##------------------------------------------------
