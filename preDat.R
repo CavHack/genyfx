@@ -122,3 +122,21 @@ boxplot(env$lof.x.cap, main = "lof.x.cap",
         boxwex = 0.5)
 hist(env$lof.x.cap, breaks = 20)
 par(mfrow = c(1, 1))
+#-------Rlof--------------------
+require(Rlof)
+evalq(Rlof.x <- lof(x, c(5:10), cores = 2,
+                    method = 'minkowski'),
+      env)
+evalq(Rlof.x.cap <- lof(x.cap, c(5:10), 
+                        cores = 2, 
+                        method = 'minkowski'),
+      env)
+#---------------------------------
+par(mfrow = c(2, 3))  
+hist(env$Rlof.x.cap[ ,6], breaks = 20)
+hist(env$Rlof.x.cap[ ,5], breaks = 20)
+hist(env$Rlof.x.cap[ ,4], breaks = 20)
+hist(env$Rlof.x.cap[ ,3], breaks = 20)
+hist(env$Rlof.x.cap[ ,2], breaks = 20)
+hist(env$Rlof.x.cap[ ,1], breaks = 20)
+par(mfrow = c(1, 1))
