@@ -102,3 +102,26 @@ env)
 env$sk.sin
 env$sk.sin.out
 sin.cap
+#------Symmetric Transform-----
+par(mfrow = c(2, 2))
+boxplot(env$x.sin, main = "x.sin with outlier")
+abline(h = 0, col = 2)
+boxplot(env$x.sin.out, main = "x.sin.out without outlier")
+abline(h = 0, col = 2)
+boxplot(env$x.sin.cap, main = "x.sin.cap with capping outlier")
+abline(h = 0, col = 2)
+par(mfrow = c(1, 1))
+##---------------------------
+require(VIM)
+evalq(a <- aggr(x.sin.out), env)
+print(env$a)
+#--------------------------
+par(mfrow= c(3, 4))
+evalq(
+	foreach(i= 1:ncol(x.sin.out)) %do% {
+	barMiss(x.sin.out, pos = i, only.miss= TRUE,
+	main = "x.sin.out without outlier")
+	
+	}, env
+)
+par(mfrow=c(1,1))
