@@ -15,3 +15,29 @@ require(lubridate)
 evalq({x.ln <- apply(x, 2, function(x) log2(x+1))
 	    sk.ln <- skewness(x.ln)},
 	    env)
+env$sk.ln
+
+#for stlm, rbci, and v.ftlm remove and impute outliers 
+#observe skewness
+
+evalq({
+	foreach(i = 1:ncol(x.ln), .combine="cbind") %do%
+	{
+		remove_outliers(x.ln[ , i])
+
+	}->x.ln.out
+	colnames(x.ln.out)<- colnames(x.ln)
+}, env)
+evalq({
+  foreach(i = 1:ncol(x.ln), .combine = "cbind") %do% {
+    capping_outliers(x.ln[ ,i])
+  } -> x.ln.cap
+  colnames(x.ln.cap) <- colnames(x.ln)
+},  env)
+evalq({
+  sk.ln.out <- skewness(x.ln.out) 
+  sk.ln.cap <- skewness(x.ln.cap)
+}, 
+env)
+env$sk.ln.out
+env$sk.ln.cap
