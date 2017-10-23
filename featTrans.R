@@ -125,3 +125,33 @@ evalq(
 	}, env
 )
 par(mfrow=c(1,1))
+evalq(x.sin.cap %>% tbl_df() %>% 
+        cbind(Data = dataSetClean$Data, .,
+              Class = dataSetClean$Class) -> 
+        dataSetSinCap, 
+      env) 
+require(GGally)
+evalq(ggpairs(dataSetSinCap, columns = 2:7, 
+              mapping = aes(color = Class),
+              title = "dataSetSinCap1 with capping outlier "), 
+      env)
+evalq(ggpairs(dataSetSinCap, columns = 8:13, 
+              mapping = aes(color = Class),
+              title = "dataSetSinCap2 with capping outlier"), 
+      env)
+#----------------------------
+##===========Normalize==========
+evalq(
+  {
+    train = 1:2000
+    val = 2001:3000
+    test = 3001:4000
+    DT <- list()
+    clean = data.frame(dataSet) %>% na.omit()
+    list(clean = clean, 
+         train = clean[train, ], 
+         val = clean[val, ], 
+         test = clean[test, ]) -> DT
+    rm(clean)
+  }, 
+env)
