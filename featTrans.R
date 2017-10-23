@@ -28,12 +28,14 @@ evalq({
 	}->x.ln.out
 	colnames(x.ln.out)<- colnames(x.ln)
 }, env)
+
 evalq({
   foreach(i = 1:ncol(x.ln), .combine = "cbind") %do% {
     capping_outliers(x.ln[ ,i])
   } -> x.ln.cap
   colnames(x.ln.cap) <- colnames(x.ln)
 },  env)
+
 evalq({
   sk.ln.out <- skewness(x.ln.out) 
   sk.ln.cap <- skewness(x.ln.cap)
@@ -41,3 +43,62 @@ evalq({
 env)
 env$sk.ln.out
 env$sk.ln.cap
+#------Plot Skewness----------
+par(mfrow = c(2,2))
+boxplot(env$x.ln, 
+        main = "x.ln with outliers",
+        xlab = "")
+boxplot(env$x.ln.out, 
+        main = "x.ln.out without outliers",
+        xlab = "")
+boxplot(env$x.ln.cap, 
+        main = "x.ln.cap with imputed outliers",
+        xlab = "")
+par(mfrow = c(1,1))
+#------------------------
+evalq(x.ln.cap %>% tbl_df() %>% 
+        cbind(Data = dataSetClean$Data, .,
+              Class = dataSetClean$Class) -> 
+        dataSetLnCap, 
+      env)
+
+require(GGally)
+evalq(ggpairs(dataSetLnCap, columns = 2:7, 
+              mapping = aes(color = Class),
+              title = "PredLnCap1"), 
+      env)
+evalq(ggpairs(dataSetLnCap, columns = 8:13, 
+              mapping = aes(color = Class),
+              title = "PredLnCap2"), 
+      env)
+#######Fourier-Sinusoid-Transform############
+evalq({x.sin <- apply(x, 2, function(x) sin(2*pi*x))
+	     sk.sin <- skewness(x.sin)
+},
+	env)
+#------------------------------------
+evalq({foreach(i = 1:ncol(x.sin), .combine="cbind") %do% {
+		 capping_outliers(x.sin[ , i])
+} -> x.sin.out
+  colnames(x.sin.out) <- colnames(x.sin)
+}
+, env})
+
+
+evalq({
+	foreach(i = 1:ncol(x.sin), .combine="cbind") %do% {
+	capping_outliers(x.sin[, i])
+}-> x.sin.cap
+    colnames(x.sin.cap) <- colnames(x.sin)
+}, env)
+
+#-----------
+evalq({
+  sk.sin.out <- skewness(x.sin.out) 
+  sk.sin.cap <- skewness(x.sin.cap)
+}, 
+env)
+#-----------
+env$sk.sin
+env$sk.sin.out
+sin.cap
