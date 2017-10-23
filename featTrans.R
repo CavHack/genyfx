@@ -166,3 +166,32 @@ evalq(
     ) -> DTn
   }, 
   env)
+#--------total statistics of the train set----
+table.Stats(env$DTn$train %>% tk_xts())
+#----Graph distribution-----------------
+boxplot(env$DTn$train %>% 
+          dplyr::select(-c(Data, Class)),
+        horizontal = T, main = "Train")
+abline(v = 0, col = 2)
+boxplot(env$DTn$test %>% 
+          dplyr::select(-c(Data, Class)),
+        horizontal = T, main = "Test")
+abline(v = 0, col = 2)
+boxplot(env$DTn$val %>% 
+          dplyr::select(-c(Data, Class)),
+        horizontal = T, main = "Val")
+abline(v = 0, col = 2)
+##--------correlation/covariation-------
+require(GGally)
+evalq(ggpairs(DTn$train, columns = 2:7, 
+              mapping = aes(color = Class),
+              title = "DTn$train1 "), 
+      env)
+evalq(ggpairs(DTn$train, columns = 8:14, 
+              mapping = aes(color = Class),
+              title = "DTn$train2"), 
+      env)
+#--------correlation of predictors------
+funModeling::correlation_table(env$DTn$train %>% 
+                                 tbl_df %>%
+                                 select(-Data), str_target = 'Class')
