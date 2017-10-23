@@ -232,3 +232,57 @@ evalq(
          test = dataSetClean[test, ]) -> DT
   }, 
 env)
+#--------------------
+evalq(
+  pipeline({
+    DT$train
+    select(-Data)
+    as.data.frame()
+    mdlp()}) -> mdlp.train, envir = env)
+#--------------------
+env$mdlp.train%>%str()
+#---------------------
+evalq(
+  {
+    mdlp.train$cutp %>% 
+      lapply(., function(x) is.numeric(x)) %>%
+      unlist -> idx   # bool
+    #----train-----------------
+    mdlp.train$Disc.data[ ,idx] -> train.d
+    #---test------------
+    DT$test %>% 
+      select(-c(Data, Class)) %>%
+      as.data.frame() -> test.d
+    
+    foreach(i = 1:length(idx), .combine = 'cbind') %do% {
+      if (idx[i]) {findInterval(test.d[ ,i], 
+                                vec = mdlp.train$cutp[[i]],
+                                rightmost.closed = FALSE, 
+                                all.inside = F,
+                                left.open = F)}
+    } %>% as.data.frame() %>% add(1) %>%
+      cbind(., DT$test$Class) -> test.d
+    colnames(test.d) <- colnames(train.d)
+    #-----val-----------------
+    DT$val %>% 
+      select(-c(Data, Class)) %>%
+      as.data.frame() -> val.d
+    foreach(i = 1:length(idx), .combine = 'cbind') %do% {
+      if (idx[i]) {findInterval(val.d[ ,i], 
+                                vec = mdlp.train$cutp[[i]],
+                                rightmost.closed = FALSE, 
+                                all.inside = F,
+                                left.open = F)}
+    } %>% as.data.frame() %>% add(1) %>%
+      cbind(., DT$val$Class) -> val.d
+    colnames(val.d) <- colnames(train.d)
+  },env
+)
+
+#-----------------
+env$train.d %>% head()
+env$test.d %>% head()
+env$val.d %>% head()
+env$train.d$v.fatl %>% table()
+env$test.d$v.fatl %>% table()
+env$val.d$v.fatl %>% table()
