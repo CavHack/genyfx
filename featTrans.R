@@ -155,3 +155,14 @@ evalq(
     rm(clean)
   }, 
 env)
+#---------------------
+require(foreach)
+evalq(
+  {
+    preProcess(DT$train, method = "spatialSign") -> preproc 
+    list(train = predict(preproc, DT$train), 
+         val = predict(preproc, DT$val),
+         test = predict(preproc, DT$test)
+    ) -> DTn
+  }, 
+  env)
