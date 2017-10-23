@@ -286,3 +286,25 @@ env$val.d %>% head()
 env$train.d$v.fatl %>% table()
 env$test.d$v.fatl %>% table()
 env$val.d$v.fatl %>% table()
+#-----cross plotting---------
+require(funModeling)
+evalq(
+	cross_plot(data= train.d,
+	str_input = c("v.fatl", "ftlm", "v.satl"),
+	str_target = "Class",
+	auto_binning = F,
+	plot_type = "both"), #quantity 'perceptron'
+	env
+)	
+
+evalq(
+  cross_plot(
+      DT$train  %>% select(-Data) %>%
+      select(c(v.satl, ftlm, v.fatl, stlm, v.rstl, Class)) %>%
+      as.data.frame(), 
+      str_input = Cs(v.satl, ftlm, v.fatl, stlm, v.rstl), 
+      str_target = "Class", 
+      auto_binning = T,
+      plot_type = "both"), #'quantity' 'percentual'
+  env
+)
