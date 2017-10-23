@@ -195,3 +195,40 @@ evalq(ggpairs(DTn$train, columns = 8:14,
 funModeling::correlation_table(env$DTn$train %>% 
                                  tbl_df %>%
                                  select(-Data), str_target = 'Class')
+
+#-----------relevance of v.fatl---------
+require(ggvis)
+evalq(
+  DTn$train %>% ggvis(~v.fatl, fill = ~Class) %>% 
+    group_by(Class) %>%  layer_densities() %>% 
+    add_legend("fill", title = "DTn$train$v.fatl"),
+  env)
+evalq(
+  DTn$val %>% ggvis(~v.fatl, fill = ~Class) %>% 
+    group_by(Class) %>%  layer_densities() %>% 
+    add_legend("fill", title = "DTn$val$v.fatl"),
+  env)
+evalq(
+  DTn$test %>% ggvis(~v.fatl, fill = ~Class) %>% 
+    group_by(Class) %>%  layer_densities() %>% 
+    add_legend("fill", title = "DTn$test$v.fatl"),
+  env) 
+##=======discretization=============
+require(discretization)
+require(caret)
+require(pipeR)
+evalq(
+  {
+    dataSet %>%
+      preProcess(., method = c("zv", "nzv", "conditionalX")) %>%
+      predict(., dataSet) %>%
+      na.omit -> dataSetClean
+    train = 1:2000
+    val = 2001:3000
+    test = 3001:4000
+    DT <- list()
+    list(train = dataSetClean[train, ], 
+         val = dataSetClean[val, ], 
+         test = dataSetClean[test, ]) -> DT
+  }, 
+env)
