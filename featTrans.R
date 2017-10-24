@@ -336,3 +336,89 @@ evalq(
                   plot_all = F, extra_above = 5, 
                   extra_under = 5)
   },env
+
+#---------
+#----BayesTrain---------------
+evalq(
+  {
+    bayesian_plot(train.d, input = "v.fatl", 
+                  target = "Class", 
+                  title = "Bayesian comparison train$v.fatl/Class",
+                  plot_all = F, extra_above = 5, 
+                  extra_under = 5)
+  },env
+)
+evalq(
+  {
+    bayesian_plot(train.d, input = "ftlm", 
+                  target = "Class", 
+                  title = "Bayesian comparison train$ftlm/Class",
+                  plot_all = F, extra_above = 5, 
+                  extra_under = 5)
+  },env
+)
+evalq(
+  {
+    bayesian_plot(train.d, input = "v.satl", 
+                  target = "Class", 
+                  title = "Bayesian comparison train$v.satl/Class",
+                  plot_all = F, extra_above = 5, 
+                  extra_under = 5)
+  },env
+)
+#------------BayesTest------------------------
+evalq(
+  {
+    bayesian_plot(test.d, input = "v.fatl", 
+                  target = "Class", 
+                  title = "Bayesian comparison test$v.fatl/Class",
+                  plot_all = F, extra_above = 5, 
+                  extra_under = 5)
+  },env
+)
+evalq(
+  {
+    bayesian_plot(test.d, input = "ftlm", 
+                  target = "Class", 
+                  title = "Bayesian comparison test$ftlm/Class",
+                  plot_all = F, extra_above = 5, 
+                  extra_under = 5)
+  },env
+)
+evalq(
+  {
+    bayesian_plot(test.d, input = "v.satl", 
+                  target = "Class", 
+                  title = "Bayesian comparison test$v.satl/Class",
+                  plot_all = F, extra_above = 5, 
+                  extra_under = 5)
+  },env
+)
+#-------------BayesVal---------------------------------
+evalq(
+  {
+    bayesian_plot(val.d, input = "v.fatl", 
+                  target = "Class", 
+                  title = "Bayesian comparison val$v.fatl/Class",
+                  plot_all = F, extra_above = 5, 
+                  extra_under = 5)
+  },env
+)
+evalq(
+  {
+    bayesian_plot(val.d, input = "ftlm", 
+                  target = "Class", 
+                  title = "Bayesian comparison val$ftlm/Class",
+                  plot_all = F, extra_above = 5, 
+                  extra_under = 5)
+  },env
+)
+evalq(
+  {
+    bayesian_plot(val.d, input = "v.satl", 
+                  target = "Class", 
+                  title = "Bayesian comparison val$v.satl/Class",
+                  plot_all = F, extra_above = 5, 
+                  extra_under = 5)
+  },env
+)
