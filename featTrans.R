@@ -422,3 +422,31 @@ evalq(
                   extra_under = 5)
   },env
 )
+##=========New Feats===============
+evalq(
+  {
+    tk_augment_timeseries_signature(pr) %>%
+      select(c(mday, wday.lbl,  hour)) %>% 
+      cbind(pr, .) -> pr.augm
+    pr.compl <- pr.augm[complete.cases(pr.augm), ]
+    pr.nest <- pr.compl %>% group_by(wday.lbl) %>% nest() 
+  },
+  env)
+#---------
+str(env$pr.augm)
+#------------------
+require(lubridate)
+evalq({pr %>% mutate(.,
+                     wday = wday(Data), #label = TRUE, abbr = TRUE),
+                     day = day(Data),
+                     hour = hour(Data)) %>%
+    filter(wday != 7) -> pr1
+  pr1.nest <- pr1 %>% na.omit %>% 
+    group_by(wday) %>% nest()}, 
+  env
+)
+#-------
+str(env$pr1)
+#----------
+env$pr1.nest
+#---------
