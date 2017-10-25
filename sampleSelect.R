@@ -12,3 +12,23 @@ DT$train_clean1 <- out11$cleanData
 },
 env)
 
+#--------------------
+require(funModeling)
+evalq({
+  par(mfrow = c(1,3))
+  par(las = 1)
+  boxplot(DT$train_clean1 %>% select(-c(Data,Class)), horizontal = TRUE,
+          main = "DT$train_clean1")
+  boxplot(DTn$train_clean1 %>% select(-c(Data,Class)), horizontal = TRUE,
+          main = "DTn$train_clean1")
+  boxplot(DTTanh.n$train_clean1 %>% select(-c(Data,Class)), horizontal = TRUE,
+          main = "DTTanh.n$train_clean1")
+  par(mfrow = c(1,1))
+}, env)
+#-----------------------
+require(GGally)
+evalq(ggpairs(DT$train_clean1 %>% select(-Data), 
+              columns = c(1:6, 13), 
+              mapping = aes(color = Class),
+              title = "DT$train_clean1/1"), 
+      env)
