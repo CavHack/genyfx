@@ -59,7 +59,17 @@ foreach(i = 1:ncol(x), .combine = "cbind") %do% {
   rm(lower, upper, med, cap1, cap2, x, x.cap)
 }, env)
 
+#----logTransform-----
+evalq({
+	DTLn <- list()
+	foreach(i = 1:3) %do% {
+	DTcap[[ i ]] %>%
+	apply(., 2, function(x) log2(x+1)) %>%
+	as.data.frame() %>%
+	cbind(., Class= DT[[i]] $Class)
+	} -> DTLn
 
+}, env)
 
 
 
