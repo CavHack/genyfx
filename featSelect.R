@@ -257,4 +257,4 @@ targ.int <- function(x){
            as.integer()) %>%
   select(-Class) %>% as.data.frame()
 
-}})
+}, })
