@@ -33,3 +33,25 @@ evalq({
 #-----------
 
 load <- loadings(env$resNLPCA)
+#------------------------------
+
+print(env$resNLPCA)
+summary(env$resNLPCA)
+evalq(plot(x = resNLPCA, y = NULL,
+				main = deparse(substitute(object)),
+				col = gray(c(0.9, 0.5))), env)
+				
+				evalq(slplot(resNLPCA), env)
+				nPcs()
+				nObs()
+				cvstat()
+				nVar()
+				loadings(env$resNLPCA) #Get loadings
+				scores() # Get the scores
+				dim() #Get the dimensions (number of observations, number of features)
+				centered() #get a logical heuristic of centroid approx.
+					center() #avg of original variables
+						completeObs() #Get the imputed data set
+						method() #Get a string naming the used PCA method
+						sDev() #get the standard deviation
+						scaled()	#get a logical heuristic indicating if scaling was done.
