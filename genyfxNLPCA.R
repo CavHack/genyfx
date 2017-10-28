@@ -17,7 +17,7 @@ evalq({
 
 #------------------------------
 
-eval(pcTrain <- resNLPCA@scores %>% tbl_df %>%
+evalq(pcTrain <- resNLPCA@scores %>% tbl_df %>%
 	cbind(., Class = DTcap.n$train$Class), env)
 	
 #----graph------
