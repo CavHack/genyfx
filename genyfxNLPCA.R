@@ -55,3 +55,30 @@ evalq(plot(x = resNLPCA, y = NULL,
 						method() #Get a string naming the used PCA method
 						sDev() #get the standard deviation
 						scaled()	#get a logical heuristic indicating if scaling was done.
+						scl()   # Get the scales of the original variablesb
+R2cum() # Get the cumulative R2
+##-------genyfxNLPCA--------------------------
+evalq({
+  DTcap.n$train %>% tbl_df %>%
+    select(-Class) %>% as.matrix() %>%
+    prep(scale = "none", center = TRUE) -> train
+  NLpca <- nlpca(train, 
+                 nPcs = 3, maxSteps = 1100,
+                 unitsPerLayer = c(3, 7, 12),
+                 weightDecay = 0.01,
+                 verbose = TRUE)
+  rm(train)
+}, env)
+#--------
+evalq(
+  pcTrainNN <- NLpca@scores %>% tbl_df %>% 
+    cbind(., Class = DTcap.n$train$Class)
+  , env)
+#-----graph--------
+require(GGally)
+evalq({
+  ggpairs(pcTrainNN,columns = 1:ncol(pcTrainNN), 
+          mapping = aes(color = Class),
+          title = "pcTrainNN -> nlpca(3, 7, 12) wd=0.01")}, 
+  env)
+##=============END=======================
