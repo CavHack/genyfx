@@ -51,6 +51,23 @@ In <- function(p = 16) {
   In <- cbind(adx, ar, atr, cci, chv, cmo, macd, 
               rsi, stoh, smi, kst)
   return(In)
+
 }
+
+form.data <- function( n = 16, z = 37, len = 500) {
+	require(magrittr)
+	x <- In( p =n)
+	out <- ZZ(ch = z, mode = "m")
+	data <- cbind(x, y = out[, 2]) %>%
+	as.data.frame %>% head(., (nrow(x)-len))%>%
+	na.omit😂
+	data$y <- as.factor(data$y)
+	return(data)
+}
+
+
+	
+	
+	
 		 
 }
