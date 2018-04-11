@@ -81,9 +81,71 @@ form.data <- function( n = 16, z = 37, len = 500) {
 	return(data)
 }
 
-
-	
-	
-	
-		 
+cleaning <- function(n = 16, z= 25, cut = 0.9 ){
+	data <- form.data(n,z)
+	descCor <- cor(data[ ,-ncol(data)])
+	#summary(descCor[upper.tri(descCor)])
+	highCor <- caret::findCorrelation(descCor, cutoff = cut)
+	data <- data[ , -highCor]
+	return(data)
 }
+
+prepareBest <- function(n, z, cut, norm, meth) {
+	require(randomUniformForest)
+	data.f <<- cleaning(n = n, z=z, cut =cut)
+	idx <- rminer::holdout(y = data.f$y)
+	x.train <- data.f[idx$tr, -ncol(data.f)]
+	x.test <-  data.f[idx$ts, -ncol(data.f)]
+  	y.train <- data.f[idx$tr, ncol(data.f)]
+  	y.test <- data.f[idx$ts, ncol(data.f)]
+ 	if(norm){
+    prep <- caret::preProcess(x = x.train, method = meth)
+    #c("center", "scale","spatialSign"), "range"
+    x.train <- predict(prep, x.train)
+    x.test <- predict(prep, x.test)
+	
+	
+}
+
+ruf <- randomUniformForest(X = x.train,
+						   Y = y.train,
+						   xtest = x.test,
+						   ytest = y.test,
+						   mtry = 1, ntree = 300,
+						   threads = 2,
+						   nodesize = 1
+				
+)
+imp.ruf <- importance(ruf, Xtest = x.test)
+best <- imp.ruf$localVariableImportance$classVariableImportance %>%
+head(., 10) %>% rownames()
+return(best)
+}
+
+prepareTrain <- function(x , y, 
+                         rati, mod = "stratified", 
+                         balance = F, 
+                         norm, meth)
+{
+  require(magrittr)
+  require(dplyr)
+  t <- rminer::holdout(y = y, ratio = rati,
+                       mode = mod)
+  train <- cbind(x[t$tr, ], y = y[t$tr])
+  if(balance){
+    train <- caret::upSample(x = train[ ,best], 
+                             y = train$y, 
+                             list = F)%>% tbl_df
+    train <- cbind(train[ ,best], select(train, y = Class))
+  }
+  test <- cbind(x[t$ts, ], y = y[t$ts])
+  if (norm) {
+    prepr <<- caret::preProcess(train[ ,best], method = meth)
+    train = predict(prepr, train[ ,best])%>% cbind(., y = train$y)
+    test =  predict(prepr, test[ ,best] %>% cbind(., y = test$y))
+  }
+  DT <- list(train = train,
+             test = test)
+  return(DT)
+}
+
