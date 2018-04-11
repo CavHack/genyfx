@@ -54,6 +54,22 @@ In <- function(p = 16) {
 
 }
 
+ZZ <- function(pr = price, ch = ch , mode="m") {
+  require(TTR)
+  require(magrittr)
+  if (ch > 1) ch <- ch/(10 ^ (Dig - 1))
+  if (mode == "m") {pr <- pr[ ,'Med']}
+  if (mode == "hl") {pr <- pr[ ,c("High", "Low")]}
+  if (mode == "cl") {pr <- pr[ ,c("Close")]}
+  zz <- ZigZag(pr, change = ch, percent = F, 
+               retrace = F, lastExtreme = T)
+  n <- 1:length(zz)
+  dz <- zz %>% diff %>% c(., NA)
+  sig <- sign(dz)
+  for (i in n) { if (is.na(zz[i])) zz[i] = zz[i - 1]}
+  return(cbind(zz, sig))
+}
+
 form.data <- function( n = 16, z = 37, len = 500) {
 	require(magrittr)
 	x <- In( p =n)
