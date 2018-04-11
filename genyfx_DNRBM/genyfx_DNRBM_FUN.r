@@ -149,3 +149,21 @@ prepareTrain <- function(x , y,
   return(DT)
 }
 
+#----PreTraining---------------------------------------
+
+pretrainDBN <- function(L, Bs, dS, nE, nCD, InM = 0.5, FinM = 0.9) {
+	require(darch)
+	dbn <- newDArch(layers = L, batchSize = Bs, logLevel = 5)
+	setInitialMomentum(dbn) <- InM
+	setFinalMomentum(dbn) <- FinM
+	setMomentumSwitch(dbn) <- round(0.8 * nE)
+	dbn <- preTrainDArch(dbn, dataSet = dS, 
+							numEpoch = nE,
+							numCD = nCD,
+							trainOutputLayer = T)
+							
+	return(dbn)
+	
+	}
+
+
