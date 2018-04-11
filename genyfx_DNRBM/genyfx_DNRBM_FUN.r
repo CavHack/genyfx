@@ -164,6 +164,34 @@ pretrainDBN <- function(L, Bs, dS, nE, nCD, InM = 0.5, FinM = 0.9) {
 							
 	return(dbn)
 	
-	}
+}
+
+fineMod <- function(variant=1, dbnin, dS, 
+					hd = 0.5, id = 0.2,
+                    act = c(2,1), nE = 10)
+{
+  setDropoutOneMaskPerEpoch(dbnin) <- FALSE
+  setDropoutHiddenLayers(dbnin) <- hd
+  setDropoutInputLayer(dbnin) <- id
+  layers <<- getLayers(dbnin)
+  stopifnot(length(layers)==length(act))
+  if(variant < 0 || variant >2) {variant = 1}
+  for(i in 1:length(layers)){
+    fun <- actFun %>% extract2(act[i])
+    layers[[i]][[2]] <- fun
+  }
+  setLayers(dbnin) <- layers
+  if(variant == 1 || variant == 2){ # backpropagation
+    if(variant == 2){# rpropagation
+      #setDropoutHiddenLayers(dbnin) <- 0.0
+      setFineTuneFunction(dbnin) <- rpropagation
+    }
+    mod = fineTuneDArch(darch = dbnin, 
+                        dataSet = dS, 
+                        numEpochs = nE,
+                        bootstrap = T)
+    return(mod)
+  }
+}
 
 
