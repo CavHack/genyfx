@@ -57,6 +57,11 @@ Evaluate <- function(actual=NULL, predicted=NULL, cm=NULL) {
 	mcPrecision = 0*p; mcPrecision[mcIndex] = p[mcIndex]
 	mcF1 = 0*p; mcF1[mcIndex] = 2 * mcPrecision[mcIndex] / (mcPrecision[mcIndex] + 1)
 	
+	#random accuracy
+	expAccuracy = sum(p*q)
+	#kappa
+	kappa = (accuracy - expAccuracy) / (1 - expAccuracy)
+	
 }
 
 
