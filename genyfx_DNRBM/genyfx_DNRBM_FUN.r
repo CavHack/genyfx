@@ -153,9 +153,13 @@ prepareTrain <- function(x , y,
 
 pretrainDBN <- function(L, Bs, dS, nE, nCD, InM = 0.5, FinM = 0.9) {
 	require(darch)
+	#create object DArch
 	dbn <- newDArch(layers = L, batchSize = Bs, logLevel = 5)
+	#set initial moment
 	setInitialMomentum(dbn) <- InM
+	#set final moment
 	setFinalMomentum(dbn) <- FinM
+	#set time of switching moments from initial to final
 	setMomentumSwitch(dbn) <- round(0.8 * nE)
 	dbn <- preTrainDArch(dbn, dataSet = dS, 
 							numEpoch = nE,
@@ -192,6 +196,29 @@ fineMod <- function(variant=1, dbnin, dS,
                         bootstrap = T)
     return(mod)
   }
+}
+
+prepareTest<- function(n, z, norm, len =501)
+{
+	x <- In(p = n) %>% na.omit %>% extract( ,best) %>%
+	tail(., len)
+	CO <- price[, "CO"] %>% tail(., len)
+	if (norm) {
+		x <- predict(prepr, x)
+	}
+	dt <- cbind(x=x, CO= CO) %>% as.data.frame()
+	return(dt)
+}
+
+testAcc <- function(obj, typ = "bin") {
+	require(fTrading)
+	x <- DT.test[, best]
+	CO <- DT.test$CO
+	out <- predict(obj, newdata = x, type = typ)
+	if(soft) {out <- max.col(out) - 1} else {out %<>% as.vector()}
+	acc <- length(y.ts[y.ts == out])/length(y.ts) %>%
+	round(., digits = 4)
+	return(list(Acc = acc, y.ts = y.ts, y = out))
 }
 
 
