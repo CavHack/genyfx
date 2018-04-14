@@ -41,7 +41,21 @@ Evaluate <- function(actual=NULL, predicted=NULL, cm=NULL) {
 								  n - rowsums[i] - colsums[i] + cm[i,i]);
 								  return(matrix(v, nrow =2, byrow= T))})
 								  
+	s = matrix(0, nrow = 2, ncol = 2)
+	for (i in i:nc) {s = s + oneVsAll[[i]]}
 	
+	#avg accuracy
+	avgAccuracy = sum(diag(s))/sum(s)
+	
+	#micro
+	microPrf = (diag(s) / apply(s, 1, sum))[1];
+	
+	#majority class
+	mcIndex = which(rowsums == max(rowsums))[1] #majority-class index
+	mcAccuracy = as.numeric(p[mcIndex])
+	mcRecall = 0*p; mcRecall[mcIndex] = 1
+	mcPrecision = 0*p; mcPrecision[mcIndex] = p[mcIndex]
+	mcF1 = 0*p; mcF1[mcIndex] = 2 * mcPrecision[mcIndex] / (mcPrecision[mcIndex] + 1)
 	
 }
 
