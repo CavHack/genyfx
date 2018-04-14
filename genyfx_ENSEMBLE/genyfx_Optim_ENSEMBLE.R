@@ -36,9 +36,18 @@ evalq({
     )
   ) -> X
 	
+#---2----MetricSelection------
+  #require(clusterSim)
+  numFeature <- 10
+  HINoV.Mod(x = X$pretrain$x %>% as.matrix(), type = "metric", s = 1, 4, 
+            distance =  NULL, # "d1" - Manhattan, "d2" - Euclidean, 
+            #"d3" - Chebychev (max), "d4" - squared Euclidean, 
+            #"d5" - GDM1, "d6" - Canberra, "d7" - Bray-Curtis
+            method = "kmeans" ,#"kmeans" (default) , "single", 
+            #"ward.D", "ward.D2", "complete", "average", "mcquitty", 
+            #"median", "centroid", "pam"
+            Index = "cRAND") %$% stopri[ ,1] -> orderX
+  orderX %>% head(numFeature) -> bestF
+}, env)
+
 	
-	
-	)
-	
-	
-})
