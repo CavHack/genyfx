@@ -62,23 +62,57 @@ Evaluate <- function(actual=NULL, predicted=NULL, cm=NULL) {
 	#kappa
 	kappa = (accuracy - expAccuracy) / (1 - expAccuracy)
 	
-}
-
-
-)
-
-
-
-
-
-
-
-
-
-
-
-
-
+	#random guess
+	rgAccuracy = 1 /nc
+	rgPrecision = p
+	rgRecall = 0*p + 1 /nc
+	rgF1 = 2 * p / (nc * p + 1)
+	
+	#rnd weighted
+	rwgAccurcy = sum(p^2)
+	rwgPrecision = p
+	rwgRecall = p
+	rwgF1 = p
+	
+	#class name diagonal
+	classNames = names(diag) 
+	if (is.null(classNames)) classNames = paste("C", (1:n), sep = "")
+	
+	return(list(
+		ConfusionMatrix = cm,
+		Metrics = data.frame(
+			Class = classNames,
+			Accuracy = accuracy,
+			Precision = precision,
+			Recall = recall,
+			F1 = f1,
+			MacroAvgPrecision = macroPrecision,
+			MacroAvgRecall = macroRecall,
+			macroAvgF1 = macroF1,
+			AvgAccuracy = avgAccuracy,
+			MicroAvgPrecision = microPrf,
+			MicroAvgRecall = microPrf,
+			MicroAvgF1 = microPrf,
+			MajorityClassAccuracy = mcAccuracy,
+			MajorityClassPrecision = mcPrecision,
+			MajorityClassRecall = mcRecall,
+			MajorityClassF1 = mcF1,
+			Kappa = kappa,
+			RandomGuessAccuracy = rgAccuracy,
+			RandomGuessPrecision = rgPrecision,
+			RandomGuessRecall = rgRecall,
+			RandomGuessF1 = rgF1,
+			RandomWeightedGuessAccurcy = rwgAccurcy,
+			RandomWeightedGuessPrecision = rwgPrecision,
+        RandomWeightedGuessRecall = rwgRecall,
+        RandomWeightedGuessWeightedF1 = rwgF1)))
+  }, env)
+			
+			
+		
+		
+		
+		
 
 
 
