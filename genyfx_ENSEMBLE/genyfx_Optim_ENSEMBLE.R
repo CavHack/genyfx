@@ -50,4 +50,61 @@ evalq({
   orderX %>% head(numFeature) -> bestF
 }, env)
 
+#---3------Training-------------------
+evalq({
+	Xtest  <- X$train$x[, bestF]
+	Ytrain <- X$pretrain$y
+	setMKLthreads(1)
+	n <- 500
+	r <- 7
+	nh <- 5
+	k <- 1
+	rng <- RNGseq(n, 12345)
+	Ens <- foreach(i = 1:n, .packages = "elmNN") %do% {
+		rngtools::setRNG(rng[[k]])
+		k <- k + 1
+		idx <- rminer::holdout(Ytrain, ratio = r/10, mode = "random")$tr
+		elmtrain(x = Xtrain[idx,], y = Ytrain[idx],
+		nhid = nh, actfun = "sin")
+	}
+	setMKLthreads(2)
 	
+}, env)
+
+#----Predict--------------
+evalq({
+  Xtest <- X$train$x[ , bestF]
+  Ytest <- X$train$y
+  foreach(i = 1:n, .packages = "elmNN", .combine = "cbind") %do% {
+    predict(Ens[[i]], newdata = Xtest)
+  } -> y.pr #[ ,n]
+}, env)
+
+
+
+
+#----BestPrediction---------------------------
+evalq({ 
+	numEns<-3
+	foreach(i = 1:n, .combine = "c") %do% {
+		ifelse(y.pr[ ,i] > 0.5, 1, 0) -> Ypred
+		Evaluate(actual = Ytest, predicted = Ypred)$Metrics$F1 %>%
+		mean()
+	} -> Score
+	
+	})
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
