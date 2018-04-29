@@ -68,3 +68,25 @@ evalq({
              nhid = nh, actfun = "sin")
   }
 }, env)
+
+#------Predict----------------------
+evalq({
+  Xtest <- X$train$x[, bestF]
+  Ytest <- X$train$y
+  foreach(i = i:n, .packages="elmNN", .combine = "cbind") %do% {
+    predict(Ens[[i]], newdata= Xtest)
+  } -> y.pr #[, n]
+}, env)
+
+evalq({
+  numEns <- 3
+  foreach(i = 1:n, .combine = "c") %do% {
+    ifelse(y.pr[, i] > 0.5, 1, 0) -> Ypred
+    Evaluate(actual = Ytest, predicted = Ypred)$Metrics$F1 %>%
+      mean()
+  } -> Score
+  Score %>% order(decreasing = TRUE) %>% head((numEns*2 + 1)) -> bestNN
+  Score[bestNN] %>% round(3)
+}, env)
+
+
