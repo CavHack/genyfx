@@ -15,3 +15,26 @@ evalq({
   preproc <- PreNorm(DTcap, meth = meth)
   DTcap.n <- NormData(DTcap, preproc = preproc)
 }, env)
+#---Data X --------------------------
+
+evalq({
+  list(
+    pretrain = list(
+      x = DTcap.n$pretrain %>% dplyr::select(-c(Data, Class)) %>% as.data.frame(),
+      y = DTcap.n$pretrain$Class %>% as.numeric() %>% subtract(1) 
+    ),
+    train = list(
+      x = DTcap.n$train %>% dplyr::select(-c(Data, Class)) %>% as.data.frame(),
+      y = DTcap.n$train$Class %>% as.numeric() %>% subtract(1) 
+    ),
+    test = list(
+      x = DTcap.n$val %>% dplyr::select(-c(Data, Class)) %>% as.data.frame(),
+      y = DTcap.n$val$Class %>% as.numeric() %>% subtract(1) 
+    ),
+    test1 = list(
+      x = DTcap.n$test %>% dplyr::select(-c(Data, Class)) %>% as.data.frame(), 
+      y = DTcap.n$test$Class %>% as.numeric() %>% subtract(1) 
+   )
+  ) -> X
+  
+})
