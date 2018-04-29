@@ -89,4 +89,35 @@ evalq({
   Score[bestNN] %>% round(3)
 }, env)
 
-
+#---6----test averaging(test)--------
+evalq({
+  n <- len(Ens)
+  Xtest <- X$test$x[ , bestF]
+  Ytest <- X$test$y
+  foreach(i = 1:n, .packages = "elmNN", .combine = "+") %:%
+    when(i %in% bestNN) %do% {
+      predict(Ens[[i]], newdata = Xtest)} %>%
+    divide_by(length(bestNN)) -> ensPred
+  ifelse(ensPred > 0.5, 1, 0) -> ensPred
+  Evaluate(actual = Ytest, predicted = ensPred)$Metrics[ ,2:5] %>%
+    round(3)
+}, env)
+# Accuracy Precision Recall    F1
+# 0     0.75     0.723  0.739 0.731
+# 1     0.75     0.774  0.760 0.767
+#--6.1 ---test averaging(test1)---------
+evalq({
+  n <- len(Ens)
+  Xtest <- X$test1$x[ , bestF]
+  Ytest <- X$test1$y
+  foreach(i = 1:n, .packages = "elmNN", .combine = "+") %:%
+    when(i %in% bestNN) %do% {
+      predict(Ens[[i]], newdata = Xtest)} %>%
+    divide_by(length(bestNN)) -> ensPred
+  ifelse(ensPred > 0.5, 1, 0) -> ensPred
+  Evaluate(actual = Ytest, predicted = ensPred)$Metrics[ ,2:5] %>%
+    round(3)
+}, env)
+# Accuracy Precision Recall    F1
+# 0    0.745     0.716  0.735 0.725
+# 1    0.745     0.770  0.753 0.761
