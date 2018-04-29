@@ -121,3 +121,42 @@ evalq({
 # Accuracy Precision Recall    F1
 # 0    0.745     0.716  0.735 0.725
 # 1    0.745     0.770  0.753 0.761
+
+#--7 --test--voting(test)--------------------
+evalq({
+  n <- len(Ens)
+  Xtest <- X$test$x[ , bestF]
+  Ytest <- X$test$y
+  foreach(i = 1:n, .packages = "elmNN", .combine = "cbind") %:% 
+    when(i %in% bestNN) %do% {
+      predict(Ens[[i]], newdata = Xtest)
+    } %>% 
+    apply(2, function(x) ifelse(x > 0.5, 1, -1)) %>%
+    apply(1, function(x) sum(x)) -> vot
+  ifelse(vot > 0, 1, 0) -> ClVot
+  Evaluate(actual = Ytest, predicted = ClVot)$Metrics[ ,2:5] %>%
+    round(3)
+}, env)
+# Accuracy Precision Recall    F1
+# 0    0.745     0.716  0.735 0.725
+# 1    0.745     0.770  0.753 0.761
+#--7.1 --test--voting(test1)--------------------
+evalq({
+  n <- len(Ens)
+  Xtest <- X$test1$x[ , bestF]
+  Ytest <- X$test1$y
+  foreach(i = 1:n, .packages = "elmNN", .combine = "cbind") %:% 
+    when(i %in% bestNN) %do% {
+      predict(Ens[[i]], newdata = Xtest)
+    } %>% 
+    apply(2, function(x) ifelse(x > 0.5, 1, -1)) %>%
+    apply(1, function(x) sum(x)) -> vot
+  ifelse(vot > 0, 1, 0) -> ClVot
+  Evaluate(actual = Ytest, predicted = ClVot)$Metrics[ ,2:5] %>%
+    round(3)
+}, env)
+#   Accuracy Precision Recall    F1
+# 0    0.761     0.787  0.775 0.781
+# 1    0.761     0.730  0.743 0.737
+
+
