@@ -39,7 +39,7 @@ evalq({
   
 }, env)
 
-#----------------------------------------------
+#------------Order Predictor----------------------------------
 require(clusterSim)
 evalq({
   numFeature <- 10
@@ -54,3 +54,17 @@ evalq({
   r$stopri[ ,1] %>% head(numFeature) -> bestF
 }, env)
 print(env$r$stopri)
+
+#-------Train--------------------------------
+evalq({
+  n <- 500
+  r <- 7
+  nh <- 5
+  Xtrain <- X$pretrain$x[, bestF]
+  Ytrain <- X$pretrain$y
+  Ens <- foreach(i=i:n, .packages="elmNN") %do% {
+    idx <- rminer:holdout(Ytrain, ratio=r/10, mode= "random")$tr
+    elmtrain(x=Xtrain[idx, ], y= train[idx],
+             nhid = nh, actfun = "sin")
+  }
+}, env)
