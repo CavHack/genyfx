@@ -47,3 +47,27 @@ evalq({
     )
   ) -> X
 }, env)
+
+#====GENYFX_OPTIM=====
+#--SRBM + RP------------
+
+evalq(
+  OPT_Res1 <- BayesianOptimization(fitnes1.DNN, bounds = 1,
+                                   init_grid_dt  = NULL, init_points = 10,
+                                   n_iter = 10, acq = "ucb", kappa = 2.576,
+                                   eps = 0.0, verbose = TRUE), envir = env)
+
+#---SRBM + BP---------------- 
+evalq(
+  OPT_Res2 <- BayesianOptimization(fitnes2.DNN, bounds = bonds2,
+                                   init_grid_dt = NULL, init_points = 10, 
+                                   n_iter = 10, acq = "ucb", kappa = 2.576, 
+                                   eps = 0.0, verbose = TRUE)
+  , envir = env) 
+#---SRBM + upperLayer + BP----
+evalq(
+  OPT_Res3 <- BayesianOptimization(fitnes3.DNN, bounds = bonds3,
+                                   init_grid_dt = NULL, init_points = 10, 
+                                   n_iter = 10, acq = "ucb", kappa = 2.576, 
+                                   eps = 0.0, verbose = TRUE)
+  , envir = env) 
