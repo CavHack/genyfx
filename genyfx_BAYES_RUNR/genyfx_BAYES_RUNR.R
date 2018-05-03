@@ -71,3 +71,12 @@ evalq(
                                    n_iter = 10, acq = "ucb", kappa = 2.576, 
                                    eps = 0.0, verbose = TRUE)
   , envir = env) 
+
+#---SRBM + upperLayer + RP----
+evalq(
+  OPT_Res4 <- BayesianOptimization(fitnes4.DNN, bounds = bonds4,
+                                   init_grid_dt = NULL, init_points = 10, 
+                                   n_iter = 10, acq = "ucb", kappa = 2.576, 
+                                   eps = 0.0, verbose = TRUE),
+  envir = env)
+
